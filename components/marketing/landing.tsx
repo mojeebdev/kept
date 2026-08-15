@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Quote, Upload } from "lucide-react";
 
 const catches = [
-  { quote: "I’ll send the template tomorrow.", label: "Template promised", tone: "Overdue" },
-  { quote: "Part two is coming next week.", label: "Follow-up promised", tone: "Due next week" },
-  { quote: "Comment GUIDE and I’ll share the link.", label: "Reply promised", tone: "Open" },
+  { quote: "I’ll send the template tomorrow.", label: "Template promised", source: "Source post", date: "2 days ago", status: "Overdue", statusClass: "bg-overdue" },
+  { quote: "Part two is coming next week.", label: "Follow-up promised", source: "Source post", date: "5 days ago", status: "Upcoming", statusClass: "bg-due" },
+  { quote: "Comment GUIDE and I’ll share the link.", label: "Reply promised", source: "Source comment", date: "1 day ago", status: "Open", statusClass: "bg-open" },
 ];
 
 const steps = [
@@ -37,11 +37,15 @@ export function Landing() {
             <Image src="/illustrations/hero-promise-relay.jpg" alt="An illustrated relay turns a source post into evidence, a follow-up draft, and a kept checkmark." width={1499} height={592} priority className="relay-art" />
           </div>
         </div>
-      </section>
-
-      <section aria-label="Promise relay" className="border-b border-ink bg-paper-raised">
-        <div className="kept-shell grid grid-cols-4 gap-2 py-5 text-center font-mono text-[0.68rem] font-semibold uppercase tracking-[0.12em] sm:gap-5 sm:text-xs">
-          {["Post", "Proof", "Draft", "Kept"].map((label, index) => <div key={label} className="flex items-center justify-center gap-2"><span className={index === 3 ? "h-2 w-2 rounded-full bg-kept" : "h-2 w-2 rounded-full bg-signal"} aria-hidden />{label}</div>)}
+        <div aria-label="Promise relay" className="border-t border-ink bg-paper-raised">
+          <div className="kept-shell process-rail grid grid-cols-2 gap-y-3 py-4 text-center font-mono text-[0.68rem] font-semibold uppercase tracking-[0.12em] sm:grid-cols-4 sm:gap-y-0 sm:py-5 sm:text-xs">
+            {["Post", "Proof", "Draft", "Kept"].map((label, index) => (
+              <div key={label} className="process-rail-item flex items-center justify-center gap-2">
+                <span className={index === 3 ? "h-2 w-2 shrink-0 rounded-full bg-kept" : "h-2 w-2 shrink-0 rounded-full bg-signal"} aria-hidden />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -54,8 +58,11 @@ export function Landing() {
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {catches.map((item) => (
               <article key={item.quote} className="evidence-card flex min-h-60 flex-col justify-between p-6">
-                <span className="eyebrow text-signal">{item.tone}</span>
-                <blockquote className="my-7 font-mono text-base leading-7">“{item.quote}”</blockquote>
+                <div className="flex items-start justify-between gap-4 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-ink-muted">
+                  <span>{item.source} · {item.date}</span>
+                  <span className="flex shrink-0 items-center gap-2 text-ink"><span className={`h-2 w-2 rounded-full ${item.statusClass}`} aria-hidden />{item.status}</span>
+                </div>
+                <blockquote className="my-7 font-display text-3xl leading-[1.08] tracking-[var(--tracking-display)]">“{item.quote}”</blockquote>
                 <p className="border-t border-rule pt-4 text-sm font-semibold">{item.label}</p>
               </article>
             ))}
@@ -67,9 +74,9 @@ export function Landing() {
         <div className="kept-shell">
           <p className="eyebrow">A calm way to follow through</p>
           <h2 className="mt-4 font-display text-[length:var(--text-display-section)] leading-[var(--leading-heading)] tracking-[var(--tracking-display)]">How it works</h2>
-          <div className="mt-10 grid gap-5 min-[720px]:grid-cols-3">
+          <div className="how-it-works-grid mt-10 grid gap-5 min-[720px]:grid-cols-3">
             {steps.map(({ icon: Icon, number, title, body }) => (
-              <article key={title} className="surface-card p-6">
+              <article key={title} className="how-it-works-card surface-card p-6">
                 <div className="flex items-start justify-between gap-4"><Icon size={30} strokeWidth={1.8} aria-hidden /><span className="eyebrow">{number}</span></div>
                 <h3 className="mt-12 font-display text-4xl leading-none">{title}</h3>
                 <p className="mt-4 text-sm leading-6 text-ink-muted">{body}</p>
