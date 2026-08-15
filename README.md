@@ -36,7 +36,7 @@ Kept never asks for social passwords, never stores social tokens or browser cook
 - Neon Postgres via Drizzle ORM and `@neondatabase/serverless`
 - **Managed Better Auth** (`@neondatabase/auth`) — the current official Neon Auth for Next.js
 - Google OAuth first, magic-link / email OTP fallback
-- Optional OpenAI-compatible AI enrichment (`AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`)
+- Optional OpenAI-compatible AI enrichment through NVIDIA NIM (`AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`)
 - Deterministic promise detector as the reliability floor
 
 ## Local setup
@@ -69,12 +69,12 @@ npm install
 npm run dev
 ```
 
-Optional AI enrichment (SpaceXAI / xAI or any OpenAI-compatible provider):
+Optional AI enrichment uses a free NVIDIA NIM preview model. Create a key at [build.nvidia.com/settings/api-keys](https://build.nvidia.com/settings/api-keys) and accept the model terms on the [Nemotron Lightning page](https://build.nvidia.com/nvidia/nemotron-3.5-lightning-30b-a3b):
 
 ```bash
-AI_BASE_URL=https://api.x.ai/v1
+AI_BASE_URL=https://integrate.api.nvidia.com/v1
 AI_API_KEY=
-AI_MODEL=grok-4.6
+AI_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
 ```
 
 If those variables are missing, or the provider fails, the deterministic scanner still finds clear promises.

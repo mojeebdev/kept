@@ -1,5 +1,9 @@
 import OpenAI from "openai";
-import { promiseCandidateListSchema, type PromiseCandidate } from "@/lib/scan/schema";
+import {
+  normalizeCandidates,
+  promiseCandidateListSchema,
+  type PromiseCandidate,
+} from "@/lib/scan/schema";
 
 function configuredKey() {
   return process.env.AI_API_KEY || process.env.NVIDIA_API_KEY || process.env.XAI_API_KEY || "";
@@ -16,11 +20,6 @@ function createClient() {
     apiKey,
     baseURL: process.env.AI_BASE_URL || "https://integrate.api.nvidia.com/v1",
   });
-}
-
-function isNvidiaEndpoint() {
-  const base = process.env.AI_BASE_URL || "https://integrate.api.nvidia.com/v1";
-  return base.includes("nvidia.com");
 }
 
 const SYSTEM = `You extract public creator-to-audience promises from posts or transcripts.
@@ -48,7 +47,7 @@ export async function enrichWithAi(
     const response = await client.chat.completions.create({
       model,
       temperature: 0.1,
-      max_tokens: 1200,
+      max_tokens: 2500,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM },
@@ -61,14 +60,26 @@ export async function enrichWithAi(
           }),
         },
       ],
-      ...(isNvidiaEndpoint()
-        ? { extra_body: { chat_template_kwargs: { enable_thinking: false } } }
-        : {}),
     });
 
-    const message = response.choices[0]?.message;
-    const raw = (message?.content || "").trim() || extractJsonFence(String(message ?? ""));
-    const parsedJson: unknown = JSON.parse(raw);
+    const message = response.choices[0]?.message as {
+      content?: string | null;
+      reasoning_content?: string | null;
+    };
+    const raw =
+      extractJsonObject(message?.content ?? "") ||
+      extractJsonObject(message?.reasoning_content ?? "") ||
+      extractJsonObject(`${message?.content ?? ""}\n${message?.reasoning_content ?? ""}`);
+    let parsedJson: unknown;
+    try {
+      parsedJson = JSON.parse(raw);
+    } catch {
+      return {
+        candidates: deterministic,
+        used: false,
+        warning: "AI analysis returned invalid structure. Using deterministic matches.",
+      };
+    }
     const parsed = promiseCandidateListSchema.safeParse(parsedJson);
     if (!parsed.success) {
       return {
@@ -78,7 +89,7 @@ export async function enrichWithAi(
       };
     }
 
-    const merged = mergeCandidates(text, deterministic, parsed.data.candidates);
+    const merged = mergeCandidates(text, deterministic, normalizeCandidates(parsed.data, publishedAt));
     return { candidates: merged, used: true };
   } catch {
     return {
@@ -123,7 +134,22 @@ function normalizeQuote(value: string) {
   return value.replace(/\s+/g, " ").trim().toLowerCase();
 }
 
-function extractJsonFence(value: string) {
-  const match = value.match(/\{[\s\S]*\}/);
-  return match?.[0] ?? "";
+function extractJsonObject(value: string) {
+  const start = value.lastIndexOf('{"candidates"');
+  const slice = start >= 0 ? value.slice(start) : value.slice(value.indexOf("{"));
+  if (!slice.startsWith("{")) return "";
+
+  for (let end = slice.length; end > 1; end -= 1) {
+    if (slice[end - 1] !== "}") continue;
+    const candidate = slice.slice(0, end);
+    try {
+      const parsed = JSON.parse(candidate) as { candidates?: unknown };
+      if (parsed && typeof parsed === "object" && Array.isArray(parsed.candidates)) {
+        return candidate;
+      }
+    } catch {
+      // Trim until the JSON object is complete.
+    }
+  }
+  return "";
 }
