@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { promiseCandidateListSchema, type PromiseCandidate } from "@/lib/scan/schema";
 
 function configuredKey() {
-  return process.env.AI_API_KEY || process.env.XAI_API_KEY || "";
+  return process.env.AI_API_KEY || process.env.NVIDIA_API_KEY || process.env.XAI_API_KEY || "";
 }
 
 export function aiConfigured() {
@@ -14,8 +14,13 @@ function createClient() {
   if (!apiKey) return null;
   return new OpenAI({
     apiKey,
-    baseURL: process.env.AI_BASE_URL || "https://api.x.ai/v1",
+    baseURL: process.env.AI_BASE_URL || "https://integrate.api.nvidia.com/v1",
   });
+}
+
+function isNvidiaEndpoint() {
+  const base = process.env.AI_BASE_URL || "https://integrate.api.nvidia.com/v1";
+  return base.includes("nvidia.com");
 }
 
 const SYSTEM = `You extract public creator-to-audience promises from posts or transcripts.
@@ -39,10 +44,11 @@ export async function enrichWithAi(
   }
 
   try {
-    const model = process.env.AI_MODEL || "grok-4.6";
+    const model = process.env.AI_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
     const response = await client.chat.completions.create({
       model,
       temperature: 0.1,
+      max_tokens: 1200,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM },
@@ -55,9 +61,13 @@ export async function enrichWithAi(
           }),
         },
       ],
+      ...(isNvidiaEndpoint()
+        ? { extra_body: { chat_template_kwargs: { enable_thinking: false } } }
+        : {}),
     });
 
-    const raw = response.choices[0]?.message?.content ?? "";
+    const message = response.choices[0]?.message;
+    const raw = (message?.content || "").trim() || extractJsonFence(String(message ?? ""));
     const parsedJson: unknown = JSON.parse(raw);
     const parsed = promiseCandidateListSchema.safeParse(parsedJson);
     if (!parsed.success) {
@@ -111,4 +121,9 @@ function mergeCandidates(
 
 function normalizeQuote(value: string) {
   return value.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function extractJsonFence(value: string) {
+  const match = value.match(/\{[\s\S]*\}/);
+  return match?.[0] ?? "";
 }
