@@ -1,79 +1,74 @@
 # BUILD_STATUS — Kept
 
-Grok implementation pass. Ready for Codex audit with `CODEX_FINISH_PROMPT.md`.
+Codex audit-and-finish pass completed on 2026-08-15. The scope remains the private, cross-device public-promise ledger described in the planning docs.
 
-## What is fully working
+## Confirmed in this audit
 
-- Next.js 16 + TypeScript + Tailwind v4 app scaffolded in this repo.
-- Public landing page that explains **public promise debt**.
-- Guest `/demo` with five seeded posts and three detectable promises, including “Comment TEMPLATE and I’ll send it tomorrow.” Demo state is in-memory only and is labeled temporary.
-- Neon Auth integration using the current official stack:
-  - `@neondatabase/auth` `createNeonAuth` / `createAuthClient`
-  - `app/api/auth/[...path]/route.ts` handler
-  - `proxy.ts` middleware protecting `/dashboard/*`
-  - Google OAuth primary + magic-link / email OTP fallback
-- Server-derived identity on every repository call. Client-supplied `user_id` is ignored.
-- Drizzle schema + SQL migration for `profiles`, `content_items`, `promises`, `follow_up_drafts` with owner indexes and a unique guard on `(user_id, content_item_id, evidence_quote)`.
-- Manual content form and CSV import with Zod + row-level errors.
-- Deterministic scanner for `I'll` / `I will` / tomorrow / next post|video / `comment KEYWORD` / send / share / link. Optional server-only AI enrichment.
-- Ledger ordered overdue → due today → open → drafted → fulfilled/dismissed. No-date promises are never overdue.
-- Promise detail: evidence first, editable summary/date, dismiss / reopen / fulfil, follow-up draft, copy, safe X intent.
-- README, `.env.example`, tests for extraction and urgency.
+- The configured Neon database is reachable and contains the required app tables: `profiles`, `content_items`, `promises`, and `follow_up_drafts`.
+- A signed-out visit to `/dashboard` redirects to `/auth/sign-in`.
+- The Google sign-in action reaches the configured Google consent screen through Neon Auth's callback flow. No account was selected or authenticated during this audit.
+- A temporary request to `/api/demo/scan` returned one candidate with the `deterministic+ai` engine while `persist` was `false`; the configured NVIDIA model responds.
+- `/demo` is isolated from account persistence: its component uses only local React state and deterministic extraction; its route handler does not import database or auth code. The guest scan returns three seeded promises, draft/fulfil actions work in the browser, and a refresh resets the workspace.
+- The demo scan now completes immediately rather than waiting for five sequential NVIDIA calls. Signed-in scanning retains optional NVIDIA enrichment with deterministic fallback.
+- The root layout suppresses the expected `<html>` hydration mismatch emitted when Neon Auth UI applies its system-theme attributes after hydration.
+- At a 375px viewport, landing, demo, sign-in, and the signed-out dashboard redirect had no horizontal overflow. Protected dashboard and promise-detail mobile checks still require an authenticated account.
 
 ## Commands run and results
 
 | Command | Result |
 |---|---|
-| `npm run typecheck` | Pass |
 | `npm run lint` | Pass |
-| `npm test` | Pass — 10 tests (5 extraction, 5 urgency) |
-| `npm run build` | Pass (Next.js 16.3.1). Auth catch-all no longer prerenders cookies. |
+| `npm run typecheck` | Pass |
+| `npm test` | Pass — 10 tests in 2 files |
+| `npm run build` | Pass — Next.js 16.3.1 production build generated `.next/BUILD_ID` |
 
-Demo seed check: 5 contents → 3 promises.
+The Vitest run emits a non-blocking future Vite config-loader warning; no test failed.
 
-## Database / auth setup still required from the owner
+## StyleGraft design pass — 2026-08-15
 
-This machine does not have a live Neon project wired for end-to-end sign-in.
+### Files applied
 
-1. Create a Neon project and enable **Auth**.
-2. Copy `DATABASE_URL`, `NEON_AUTH_BASE_URL`, and generate `NEON_AUTH_COOKIE_SECRET`.
-3. Enable Google on the Auth branch. Register `{NEON_AUTH_BASE_URL}/callback/google` for production.
-4. Enable Magic Link (or Email OTP).
-5. Add `http://localhost:3000` and the Vercel domain to trusted domains.
-6. Apply `drizzle/0000_kept_schema.sql` or run `npx drizzle-kit push`.
-7. Sign in on two browsers and confirm the same ledger.
+- `app/tokens.css` — semantic colour, typography, spacing, geometry, and motion tokens sourced from the supplied Kept token document.
+- `app/globals.css` and `app/layout.tsx` — global token import, semantic Tailwind mapping, reduced-motion baseline, and Instrument Serif / DM Sans / IBM Plex Mono loading.
+- `components/site-header.tsx` and `components/marketing/landing.tsx` — black navigation, blush Promise Relay hero, proof rail, evidence-led cards, and butter process section.
+- `app/dashboard/layout.tsx`, workspace, detail, intake, demo, and sign-in components — calmer paper workspace surfaces, proof-first detail treatment, token-based actions, and clearer success/error announcements.
+- `public/illustrations/hero-promise-relay.svg` — original code-built SVG; no source artwork, source copy, stock assets, robot, or social logos were introduced.
+- `DESIGN.md` and `docs/hackathon-build/design/kept-stylegraft-decisions.md` — reusable design system and concise applied-decision record.
 
-Until those exist, `/` and `/demo` work; `/dashboard` redirects to sign-in and cannot persist.
+### Verification
 
-## Intentionally deferred
+- `npm run lint` — pass.
+- `npm run typecheck` — pass.
+- `npm test` — pass, 10 tests in 2 files.
+- `npm run build` — pass.
+- Browser QA — landing and demo have no horizontal overflow at 1440px, 1024px, 390px, or 360px. The hero has two columns at 1440px/1024px and a single copy-first column at 390px/360px. The demo still finds three promises; signed-out `/dashboard` still redirects to `/auth/sign-in`.
 
-- Deploy, screenshots, and demo video (checklist items 10–11 — Codex / owner).
-- Direct social OAuth, publishing, billing, teams, analytics, file upload, scheduled digests.
-- `drizzle-kit pull` of `neon_auth.*` (needs a live Auth-enabled database). App tables use `user_id` UUID without a hard FK to `neon_auth.user`.
-- Password sign-up UI (out of spec).
+### Asset and owner step
 
-## Known defects / rough edges
+The included Promise Relay SVG is complete for the MVP. An optional hand-finished illustrator or Canva export may replace it later at the same path and alt text. The remaining owner-only authenticated persistence checks below are unchanged.
 
-- Cross-device persistence and Google/magic-link were **not** live-verified here. Do not treat them as proven until the owner env is connected.
-- `lucide-react` is installed per spec but barely used; the visual language is type + stamps, not icon chrome.
-- Auth UI provider still wraps the tree so Neon AuthView works for magic-link callback paths. Custom `/auth/sign-in` is the primary screen.
-- AI enrichment is best-effort. Invalid or missing provider output falls back to deterministic matches.
+## Remaining owner-only verification
 
-## Local run
+These steps require an actual Google account or mailbox and must be completed before claiming the full core loop is proven:
+
+1. Complete Google sign-in, or request and open a magic-link / Email OTP sign-in.
+2. In the resulting real account, add `Comment TEMPLATE and I’ll send it tomorrow.`, confirm scan output, save a follow-up draft, mark it fulfilled, and reload.
+3. Open the same account in a second browser/device and confirm the content, promise, draft, and fulfilled state match.
+4. Check `/dashboard` and `/dashboard/promise/[id]` at a narrow mobile viewport while signed in.
+
+## Current limits
+
+- No user-owned authenticated session was available to this audit, so real account persistence and cross-device continuity are not yet proven end-to-end.
+- Magic-link / Email OTP delivery was not triggered because no owner email address was supplied.
+- Kept does not deploy, publish content, scrape social platforms, or store social credentials.
+
+## Setup and deployment
+
+`README.md` reflects the current NVIDIA configuration:
 
 ```bash
-cp .env.example .env.local   # then fill Neon values
-npx drizzle-kit push
-npm install
-npm run dev
+AI_BASE_URL=https://integrate.api.nvidia.com/v1
+AI_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
 ```
 
-Open `http://localhost:3000`, then `/demo` for the judge path.
-
-## Deploy
-
-Vercel-compatible. Set the same env vars. Re-apply the SQL schema. Add the production origin to Neon Auth trusted domains. Do not deploy from this pass unless asked.
-
-## Design note
-
-Editorial ledger, not an AI dashboard: recycled-stone paper, IBM Plex Serif/Sans/Mono, oxide-teal seal, rubber-stamp statuses, perforated evidence tickets.
+For deployment, configure the same database, Neon Auth, and AI variables; add the production origin to Neon Auth trusted domains; and complete the owner-only verification above before recording screenshots or video.

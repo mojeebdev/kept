@@ -1,103 +1,88 @@
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, BadgeCheck, Quote, Upload } from "lucide-react";
+
+const catches = [
+  { quote: "I’ll send the template tomorrow.", label: "Template promised", tone: "Overdue" },
+  { quote: "Part two is coming next week.", label: "Follow-up promised", tone: "Due next week" },
+  { quote: "Comment GUIDE and I’ll share the link.", label: "Reply promised", tone: "Open" },
+];
+
+const steps = [
+  { icon: Upload, number: "01", title: "Paste", body: "Add a post, thread, transcript, or comment. Kept only works with what you choose to bring in." },
+  { icon: Quote, number: "02", title: "See the proof", body: "Kept flags a possible commitment and keeps the exact source excerpt attached for review." },
+  { icon: BadgeCheck, number: "03", title: "Close the loop", body: "Edit the follow-up, copy it to the right place, then mark the promise kept when you post it." },
+];
 
 export function Landing() {
   return (
     <main>
-      <section className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:py-20">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.22em] text-seal">
-            Public promise debt
-          </p>
-          <h1 className="mt-4 max-w-xl font-display text-5xl leading-[0.95] tracking-tight sm:text-6xl">
-            Your audience is still waiting.
-          </h1>
-          <p className="mt-6 max-w-lg text-lg leading-8 text-ink-muted">
-            Creators lose trust through forgotten commitments, not missed posting slots.
-            Kept turns the words you already published into a private ledger — then helps
-            you write the follow-up that closes the loop.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/demo"
-              className="bg-ink px-5 py-3 text-sm font-medium text-paper-raised hover:bg-seal"
-            >
-              Try the demo
-            </Link>
-            <Link
-              href="/auth/sign-in"
-              className="border border-ink px-5 py-3 text-sm font-medium hover:border-seal hover:text-seal"
-            >
-              Sign in to keep a ledger
-            </Link>
-          </div>
-        </div>
-
-        <aside className="ticket p-6 pl-8">
-          <div className="flex items-center justify-between">
-            <span className="stamp text-overdue">Overdue</span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
-              Sample ticket
-            </span>
-          </div>
-          <blockquote className="mt-5 border-l-2 border-overdue/50 pl-3 font-mono text-sm leading-6">
-            “Comment TEMPLATE and I’ll send it tomorrow.”
-          </blockquote>
-          <p className="mt-4 font-display text-2xl leading-snug">
-            Send the TEMPLATE to anyone who comments TEMPLATE
-          </p>
-          <p className="mt-3 text-sm text-ink-muted">Due two days ago · evidence from the original post</p>
-        </aside>
-      </section>
-
-      <section className="border-y border-rule/80">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
-          {[
-            {
-              n: "01",
-              title: "Paste what you already said",
-              body: "Posts, transcripts, comment replies. Manual text or a small CSV. No social passwords. No scraping.",
-            },
-            {
-              n: "02",
-              title: "Scan for promise debt",
-              body: "Kept highlights the exact quote, a plain-language action, and whether it is open, due, or overdue.",
-            },
-            {
-              n: "03",
-              title: "Write the follow-up and mark it kept",
-              body: "Draft the reply, copy it, open X if you want, then record the promise as fulfilled. The ledger stays with your account.",
-            },
-          ].map((step) => (
-            <div key={step.n}>
-              <p className="font-mono text-xs tracking-[0.18em] text-ink-muted">{step.n}</p>
-              <h2 className="mt-2 font-display text-2xl">{step.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-ink-muted">{step.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <h2 className="font-display text-3xl">A ledger, not another content machine.</h2>
-            <p className="mt-4 max-w-md leading-7 text-ink-muted">
-              Kept does not schedule posts, scrape accounts, or publish for you. It keeps the
-              private record of what you already promised in public.
+      <section className="border-b-2 border-ink bg-[var(--surface-hero)]">
+        <div className="kept-shell grid items-center gap-10 py-12 lg:grid-cols-[1.08fr_0.92fr] lg:py-20">
+          <div className="max-w-3xl">
+            <p className="eyebrow text-ink">A private promise ledger for creators</p>
+            <h1 className="mt-5 font-display text-[length:var(--text-display-hero)] leading-[var(--leading-display)] tracking-[var(--tracking-display)]">
+              Keep the promises your content makes.
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-ink-muted">
+              Paste posts, threads, transcripts, or comments. Kept keeps the evidence attached to every suggested follow-up, so you can make good on what you said.
             </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link href="/demo" className="button-primary">Try the live example <ArrowRight size={17} aria-hidden /></Link>
+              <a href="#how-it-works" className="font-semibold underline decoration-2 underline-offset-4 hover:text-seal">See how it works</a>
+            </div>
+            <p className="mt-6 font-mono text-xs leading-5 text-ink-muted">No passwords, social credentials, or auto-posting.</p>
           </div>
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {[
-              "Google or magic-link sign-in. Same workspace on another phone.",
-              "Deterministic scan works even if AI is offline.",
-              "Evidence quote sits above any generated summary.",
-              "Dismiss a false positive. Reopen anything you closed too soon.",
-            ].map((item) => (
-              <li key={item} className="border border-rule bg-paper-raised/70 p-4 text-sm leading-6">
-                {item}
-              </li>
+          <div className="order-last lg:order-none">
+            <Image src="/illustrations/hero-promise-relay.jpg" alt="An illustrated relay turns a source post into evidence, a follow-up draft, and a kept checkmark." width={1499} height={592} priority className="relay-art" />
+          </div>
+        </div>
+      </section>
+
+      <section aria-label="Promise relay" className="border-b border-ink bg-paper-raised">
+        <div className="kept-shell grid grid-cols-4 gap-2 py-5 text-center font-mono text-[0.68rem] font-semibold uppercase tracking-[0.12em] sm:gap-5 sm:text-xs">
+          {["Post", "Proof", "Draft", "Kept"].map((label, index) => <div key={label} className="flex items-center justify-center gap-2"><span className={index === 3 ? "h-2 w-2 rounded-full bg-kept" : "h-2 w-2 rounded-full bg-signal"} aria-hidden />{label}</div>)}
+        </div>
+      </section>
+
+      <section id="what-it-catches" className="bg-paper py-18 sm:py-24">
+        <div className="kept-shell">
+          <div className="max-w-2xl">
+            <p className="eyebrow text-seal">Evidence, not guesswork</p>
+            <h2 className="mt-4 font-display text-[length:var(--text-display-section)] leading-[var(--leading-heading)] tracking-[var(--tracking-display)]">What Kept catches</h2>
+          </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {catches.map((item) => (
+              <article key={item.quote} className="evidence-card flex min-h-60 flex-col justify-between p-6">
+                <span className="eyebrow text-signal">{item.tone}</span>
+                <blockquote className="my-7 font-mono text-base leading-7">“{item.quote}”</blockquote>
+                <p className="border-t border-rule pt-4 text-sm font-semibold">{item.label}</p>
+              </article>
             ))}
-          </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" className="border-y-2 border-ink bg-[var(--surface-explainer)] py-18 sm:py-24">
+        <div className="kept-shell">
+          <p className="eyebrow">A calm way to follow through</p>
+          <h2 className="mt-4 font-display text-[length:var(--text-display-section)] leading-[var(--leading-heading)] tracking-[var(--tracking-display)]">How it works</h2>
+          <div className="mt-10 grid gap-5 min-[720px]:grid-cols-3">
+            {steps.map(({ icon: Icon, number, title, body }) => (
+              <article key={title} className="surface-card p-6">
+                <div className="flex items-start justify-between gap-4"><Icon size={30} strokeWidth={1.8} aria-hidden /><span className="eyebrow">{number}</span></div>
+                <h3 className="mt-12 font-display text-4xl leading-none">{title}</h3>
+                <p className="mt-4 text-sm leading-6 text-ink-muted">{body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="why-it-matters" className="bg-paper py-18 sm:py-24">
+        <div className="kept-shell grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div><p className="eyebrow text-seal">Why it matters</p><h2 className="mt-4 max-w-4xl font-display text-[length:var(--text-display-section)] leading-[var(--leading-heading)] tracking-[var(--tracking-display)]">Trust is built in the follow-through.</h2></div>
+          <div><p className="max-w-md text-lg leading-8 text-ink-muted">Kept is not a social scheduler or auto-publisher. It gives you a private record of your public commitments, then helps you prepare the response you decide to post.</p><Link href="/auth/sign-in" className="button-secondary mt-6">Start a private ledger <ArrowRight size={17} aria-hidden /></Link></div>
         </div>
       </section>
     </main>

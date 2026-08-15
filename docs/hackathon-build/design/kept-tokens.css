@@ -1,0 +1,143 @@
+/* Kept — design tokens
+   Import once from the global stylesheet after Tailwind's base import.
+   Keep these semantic tokens stable; components should not hard-code hex values. */
+
+:root {
+  /* Typography */
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-sans: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  --text-display-hero: clamp(3.25rem, 7vw, 7rem);
+  --text-display-section: clamp(2.5rem, 4.2vw, 4.75rem);
+  --text-heading-lg: clamp(1.75rem, 2.2vw, 2.5rem);
+  --text-heading-md: 1.375rem;
+  --text-body-lg: 1.125rem;
+  --text-body: 1rem;
+  --text-meta: 0.75rem;
+
+  --leading-display: 0.9;
+  --leading-heading: 1.04;
+  --leading-body: 1.55;
+  --tracking-display: -0.055em;
+  --tracking-meta: 0.08em;
+
+  /* Core palette */
+  --color-ink: #181813;
+  --color-ink-soft: #4f4e46;
+  --color-ink-faint: #77756b;
+  --color-paper: #f8f4ea;
+  --color-paper-raised: #fffdf7;
+  --color-paper-muted: #eee8dc;
+  --color-blush: #f5b6a7;
+  --color-butter: #f8d05b;
+  --color-signal: #ed5c2f;
+  --color-signal-hover: #cc421d;
+  --color-kept: #24745f;
+  --color-kept-soft: #dceee7;
+  --color-warning: #9d6300;
+  --color-warning-soft: #fff0be;
+  --color-error: #ae3d2f;
+  --color-error-soft: #fce3dc;
+  --color-focus: #ed5c2f;
+
+  /* Semantic surfaces and text */
+  --surface-page: var(--color-paper);
+  --surface-raised: var(--color-paper-raised);
+  --surface-subtle: var(--color-paper-muted);
+  --surface-hero: var(--color-blush);
+  --surface-explainer: var(--color-butter);
+  --surface-inverse: var(--color-ink);
+  --text-primary: var(--color-ink);
+  --text-secondary: var(--color-ink-soft);
+  --text-tertiary: var(--color-ink-faint);
+  --text-inverse: var(--color-paper-raised);
+  --border-default: rgba(24, 24, 19, 0.28);
+  --border-strong: var(--color-ink);
+
+  --status-open-bg: var(--color-warning-soft);
+  --status-open-fg: #6e4700;
+  --status-drafted-bg: #f6e2d9;
+  --status-drafted-fg: #7b3522;
+  --status-kept-bg: var(--color-kept-soft);
+  --status-kept-fg: #185747;
+  --status-dismissed-bg: #e9e7df;
+  --status-dismissed-fg: #5c5b54;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Layout */
+  --content-max: 75rem;
+  --content-reading: 43rem;
+  --gutter-desktop: 1.5rem;
+  --gutter-mobile: 1rem;
+  --nav-height: 3.5rem;
+
+  /* Geometry */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --shadow-ink-sm: 2px 2px 0 var(--color-ink);
+  --shadow-ink-md: 4px 4px 0 var(--color-ink);
+  --shadow-none: none;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-story: 800ms;
+}
+
+@media (max-width: 48rem) {
+  :root {
+    --gutter-desktop: var(--gutter-mobile);
+    --space-24: 4.5rem;
+    --space-32: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-story: 0ms;
+  }
+}
+
+/* Optional baseline only. Component styles should compose the semantic tokens above. */
+html {
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+::selection {
+  background: var(--color-butter);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}

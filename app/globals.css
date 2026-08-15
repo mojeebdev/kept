@@ -1,115 +1,55 @@
 @import "tailwindcss";
+@import "./tokens.css";
 @import "@neondatabase/auth-ui/tailwind";
 
-:root {
-  --paper: #e4e6e1;
-  --paper-raised: #f4f5f1;
-  --paper-sunken: #d7dad4;
-  --ink: #1a2430;
-  --ink-muted: #5a625c;
-  --rule: #c3c8c1;
-  --seal: #2f6f62;
-  --overdue: #b23a2f;
-  --due: #b07a1a;
-  --open: #3d5a80;
-  --draft: #5c4d7a;
-  --kept: #2f6f62;
-  --dismissed: #7a7f7c;
-}
-
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-raised: var(--paper-raised);
-  --color-paper-sunken: var(--paper-sunken);
-  --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-rule: var(--rule);
-  --color-seal: var(--seal);
-  --color-overdue: var(--overdue);
-  --color-due: var(--due);
-  --color-open: var(--open);
-  --color-draft: var(--draft);
-  --color-kept: var(--kept);
-  --color-dismissed: var(--dismissed);
-  --font-display: var(--font-plex-serif);
-  --font-sans: var(--font-plex-sans);
-  --font-mono: var(--font-plex-mono);
+  --color-paper: var(--surface-page);
+  --color-paper-raised: var(--surface-raised);
+  --color-paper-sunken: var(--surface-subtle);
+  --color-ink: var(--text-primary);
+  --color-ink-muted: var(--text-secondary);
+  --color-rule: var(--border-default);
+  --color-seal: var(--color-kept);
+  --color-overdue: var(--color-signal);
+  --color-due: var(--color-warning);
+  --color-open: var(--status-open-fg);
+  --color-draft: var(--status-drafted-fg);
+  --color-kept: var(--color-kept);
+  --color-dismissed: var(--status-dismissed-fg);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-* {
-  box-sizing: border-box;
+@layer base {
+  * { box-sizing: border-box; }
+  html { background: var(--surface-page); color: var(--text-primary); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100%; background: var(--surface-page); color: var(--text-primary); font-family: var(--font-sans); line-height: var(--leading-body); }
+  a { color: inherit; }
+  button, input, textarea, select { font: inherit; }
+  ::selection { background: var(--color-butter); color: var(--color-ink); }
+  :focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
 }
 
-html {
-  background: var(--paper);
+.kept-shell { width: min(100% - 2rem, var(--content-max)); margin-inline: auto; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: var(--tracking-meta); text-transform: uppercase; }
+.button-primary, .button-secondary, .button-inverse {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; min-height: 2.75rem;
+  border: 2px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.65rem 1rem;
+  font-size: 0.9rem; font-weight: 700; line-height: 1; transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
 }
-
-body {
-  margin: 0;
-  min-height: 100%;
-  background:
-    radial-gradient(circle at 12% -8%, rgba(47, 111, 98, 0.08), transparent 36%),
-    linear-gradient(180deg, #eceee8 0%, var(--paper) 28%);
-  color: var(--ink);
-  font-family: var(--font-plex-sans), "Segoe UI", sans-serif;
-}
-
-a {
-  color: inherit;
-}
-
-::selection {
-  background: #cfe0d8;
-}
-
-:focus-visible {
-  outline: 2px solid var(--seal);
-  outline-offset: 3px;
-}
-
-.ledger-rule {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent 31px,
-    rgba(26, 36, 48, 0.06) 31px,
-    rgba(26, 36, 48, 0.06) 32px
-  );
-}
-
-.ticket {
-  position: relative;
-  background: var(--paper-raised);
-  border: 1px solid var(--rule);
-  box-shadow: 0 10px 28px rgba(26, 36, 48, 0.06);
-}
-
-.ticket::before {
-  content: "";
-  position: absolute;
-  inset: 8px auto 8px -7px;
-  width: 14px;
-  background-image: radial-gradient(circle at 3px 7px, var(--paper) 6px, transparent 7px);
-  background-size: 14px 18px;
-}
-
-.stamp {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.18rem 0.55rem;
-  border: 1.5px solid currentColor;
-  border-radius: 2px;
-  font-family: var(--font-plex-mono), ui-monospace, monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  transform: rotate(-2deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
+.button-primary { background: var(--color-signal); color: var(--text-inverse); }
+.button-primary:hover { background: var(--color-signal-hover); transform: translate(-1px, -1px); box-shadow: var(--shadow-ink-sm); }
+.button-secondary { background: transparent; color: var(--text-primary); }
+.button-secondary:hover { background: var(--surface-raised); transform: translate(-1px, -1px); box-shadow: var(--shadow-ink-sm); }
+.button-inverse { border-color: var(--text-inverse); background: var(--text-inverse); color: var(--surface-inverse); }
+.button-inverse:hover { background: var(--color-butter); border-color: var(--color-butter); }
+.surface-card { border: 1px solid var(--border-default); border-radius: var(--radius-md); background: var(--surface-raised); }
+.evidence-card { border: 2px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-raised); box-shadow: var(--shadow-ink-sm); }
+.ticket { position: relative; background: var(--surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-md); box-shadow: none; }
+.ticket::before { content: ""; position: absolute; inset: 8px auto 8px -7px; width: 14px; background-image: radial-gradient(circle at 3px 7px, var(--surface-page) 6px, transparent 7px); background-size: 14px 18px; }
+.stamp { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid currentColor; border-radius: var(--radius-pill); padding: 0.25rem 0.6rem; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: var(--tracking-meta); text-transform: uppercase; }
+.relay-art { width: 100%; max-width: 42rem; margin-inline: auto; }
+.relay-art .signal-ribbon { stroke-dasharray: 18 10; animation: relay-draw var(--duration-story) var(--ease-out) both; }
+@keyframes relay-draw { from { stroke-dashoffset: 80; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; } }

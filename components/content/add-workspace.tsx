@@ -114,11 +114,7 @@ export function AddWorkspace() {
             className="mt-2 w-full border border-rule bg-paper-raised p-2"
           />
         </label>
-        <button
-          type="submit"
-          disabled={busy}
-          className="bg-ink px-4 py-2 text-sm text-paper-raised disabled:opacity-60"
-        >
+        <button type="submit" disabled={busy} className="button-primary disabled:opacity-60">
           {busy ? "Saving…" : "Save and scan"}
         </button>
         {message && <p className="text-sm text-seal">{message}</p>}
@@ -137,7 +133,7 @@ export function AddWorkspace() {
           rows={12}
           placeholder={'body,platform,published_at,source_url\n"I’ll share the template tomorrow.",x,2026-08-14,'}
         />
-        <button type="submit" disabled={busy} className="border border-ink px-4 py-2 text-sm">
+        <button type="submit" disabled={busy} className="button-secondary">
           Import valid rows
         </button>
         {csvReport && <p className="text-sm leading-6 text-ink-muted">{csvReport}</p>}

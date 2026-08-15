@@ -27,27 +27,13 @@ export function DemoWorkspace() {
   const ledger = sortLedger(promises);
   const active = ledger.find((item) => item.id === activeId) ?? ledger[0] ?? null;
 
-  async function scanDebt() {
+  function scanDebt() {
     setBusy(true);
     try {
       const next: PromiseDTO[] = [];
       for (const item of contents) {
         const publishedAt = item.publishedAt ? new Date(item.publishedAt) : null;
-        const local = extractPromiseCandidates(item.body, publishedAt);
-        let candidates = local;
-        try {
-          const response = await fetch("/api/demo/scan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ body: item.body, publishedAt: item.publishedAt }),
-          });
-          if (response.ok) {
-            const json = (await response.json()) as { candidates?: typeof local };
-            if (json.candidates?.length) candidates = json.candidates;
-          }
-        } catch {
-          // Deterministic floor still works offline.
-        }
+        const candidates = extractPromiseCandidates(item.body, publishedAt);
 
         for (const candidate of candidates) {
           const exists = promises.some(
@@ -157,13 +143,13 @@ export function DemoWorkspace() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div className="border border-due/40 bg-[#f4ead3] px-4 py-3 text-sm">{DEMO_BANNER}</div>
+    <div className="kept-shell py-8 sm:py-12">
+      <div className="border-2 border-ink bg-[var(--status-open-bg)] px-4 py-3 text-sm">{DEMO_BANNER}</div>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-seal">Guest demo</p>
-          <h1 className="mt-2 font-display text-4xl tracking-tight">Scan promise debt</h1>
+          <p className="eyebrow text-seal">Guest demo</p>
+          <h1 className="mt-3 font-display text-[length:var(--text-heading-lg)] leading-[var(--leading-heading)] tracking-[var(--tracking-display)]">Scan promise debt</h1>
           <p className="mt-3 max-w-xl text-ink-muted">
             Five seeded creator posts. Three should surface as promises, including the exact
             quote about sending TEMPLATE tomorrow.
@@ -173,17 +159,17 @@ export function DemoWorkspace() {
           type="button"
           onClick={scanDebt}
           disabled={busy}
-          className="bg-ink px-5 py-3 text-sm text-paper-raised hover:bg-seal disabled:opacity-60"
+          className="button-primary disabled:cursor-not-allowed disabled:opacity-60"
         >
           {busy ? "Scanning…" : "Scan promise debt"}
         </button>
       </div>
 
-      {toast && <p className="mt-4 text-sm text-seal">{toast}</p>}
+      {toast && <p aria-live="polite" className="mt-4 border-l-2 border-seal pl-3 text-sm text-seal">{toast}</p>}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <section>
-          <h2 className="font-display text-2xl">Source slips</h2>
+          <h2 className="font-display text-3xl">Source slips</h2>
           <label className="mt-4 block text-sm text-ink-muted">
             Add a fresh line
             <textarea
@@ -193,12 +179,12 @@ export function DemoWorkspace() {
               rows={3}
             />
           </label>
-          <button type="button" onClick={addFreshLine} className="mt-2 border border-ink px-3 py-2 text-sm">
+          <button type="button" onClick={addFreshLine} className="button-secondary mt-2">
             Add to demo
           </button>
           <ul className="mt-6 space-y-3">
             {contents.map((item) => (
-              <li key={item.id} className="border border-rule bg-paper-raised/80 p-4">
+              <li key={item.id} className="surface-card p-4">
                 <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
                   {item.platform} · sample
                 </p>
@@ -209,7 +195,7 @@ export function DemoWorkspace() {
         </section>
 
         <section>
-          <h2 className="font-display text-2xl">Ledger</h2>
+          <h2 className="font-display text-3xl">Ledger</h2>
           {!scanned && (
             <p className="mt-4 border border-dashed border-rule p-6 text-sm text-ink-muted">
               Click <strong>Scan promise debt</strong> to extract evidence-backed commitments from
@@ -231,16 +217,16 @@ export function DemoWorkspace() {
           </div>
 
           {active && (
-            <div id="demo-detail" className="ticket mt-6 p-5 pl-7">
+            <div id="demo-detail" className="evidence-card mt-6 p-5">
               <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
                 Selected promise
               </p>
               <blockquote className="mt-3 font-mono text-sm leading-6">“{active.evidenceQuote}”</blockquote>
               <div className="mt-4 flex flex-wrap gap-2">
-                <button type="button" onClick={draftActive} className="bg-ink px-3 py-2 text-sm text-paper-raised">
+                <button type="button" onClick={draftActive} className="button-primary">
                   Draft follow-up
                 </button>
-                <button type="button" onClick={fulfilActive} className="border border-ink px-3 py-2 text-sm">
+                <button type="button" onClick={fulfilActive} className="button-secondary">
                   Mark fulfilled
                 </button>
               </div>

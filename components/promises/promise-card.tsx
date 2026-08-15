@@ -13,7 +13,7 @@ export function PromiseCard({
   timezone?: string;
 }) {
   return (
-    <Link href={href} className="ticket block p-5 pl-7 transition hover:-translate-y-0.5">
+    <Link href={href} className="ticket block p-5 pl-7 transition-transform duration-150 hover:-translate-y-0.5 hover:border-ink">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <StatusStamp status={item.status} urgency={item.urgency} />
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
@@ -21,7 +21,7 @@ export function PromiseCard({
           {item.confidence}
         </p>
       </div>
-      <blockquote className="mt-4 border-l-2 border-seal/40 pl-3 font-mono text-sm leading-6 text-ink">
+      <blockquote className="mt-4 border-l-2 border-signal pl-3 font-mono text-sm leading-6 text-ink">
         “{item.evidenceQuote}”
       </blockquote>
       <p className="mt-3 font-display text-xl leading-snug">{item.summary}</p>

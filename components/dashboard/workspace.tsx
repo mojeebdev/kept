@@ -49,7 +49,7 @@ export function DashboardWorkspace({
 
   if (!databaseReady) {
     return (
-      <div className="border border-overdue/40 bg-[#f7e6e3] p-6 text-sm leading-7">
+      <div role="alert" className="border-2 border-overdue bg-[var(--color-error-soft)] p-6 text-sm leading-7">
         Neon Postgres is not configured. Add <code>DATABASE_URL</code> and run the Kept
         schema before this signed-in workspace can persist.
       </div>
@@ -57,31 +57,31 @@ export function DashboardWorkspace({
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-seal">Private ledger</p>
-          <h1 className="mt-2 font-display text-4xl tracking-tight">What you still owe</h1>
+          <p className="eyebrow text-seal">Private ledger</p>
+          <h1 className="mt-3 font-display text-[length:var(--text-heading-lg)] leading-[var(--leading-heading)] tracking-[var(--tracking-display)]">What you still owe</h1>
           <p className="mt-3 max-w-xl text-ink-muted">
             Overdue first, then due today, then open. Evidence stays above every generated summary.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/dashboard/add" className="border border-ink px-4 py-3 text-sm">
+          <Link href="/dashboard/add" className="button-secondary">
             Add content
           </Link>
           <button
             type="button"
             onClick={scan}
             disabled={busy || contents.length === 0}
-            className="bg-ink px-4 py-3 text-sm text-paper-raised hover:bg-seal disabled:opacity-50"
+            className="button-primary disabled:cursor-not-allowed disabled:opacity-50"
           >
             {busy ? "Scanning…" : "Scan promise debt"}
           </button>
         </div>
       </div>
 
-      {message && <p className="text-sm text-seal">{message}</p>}
+      {message && <p aria-live="polite" className="border-l-2 border-seal pl-3 text-sm text-seal">{message}</p>}
       {warnings.map((warning) => (
         <p key={warning.message} className="text-sm text-due">
           {warning.message}
@@ -89,20 +89,20 @@ export function DashboardWorkspace({
       ))}
 
       {contents.length === 0 && (
-        <div className="border border-dashed border-rule p-8">
+        <div className="evidence-card max-w-2xl p-8">
           <h2 className="font-display text-2xl">No source text yet</h2>
           <p className="mt-3 max-w-lg text-sm leading-7 text-ink-muted">
             Paste a post or import a small CSV, then scan. Kept looks for commitments like
             “I’ll send it tomorrow” or “comment TEMPLATE”.
           </p>
-          <Link href="/dashboard/add" className="mt-4 inline-block bg-ink px-4 py-2 text-sm text-paper-raised">
+          <Link href="/dashboard/add" className="button-primary mt-5">
             Add the first slip
           </Link>
         </div>
       )}
 
       {contents.length > 0 && items.length === 0 && (
-        <div className="border border-dashed border-rule p-8 text-sm leading-7 text-ink-muted">
+        <div className="surface-card max-w-2xl border-dashed p-8 text-sm leading-7 text-ink-muted">
           Content is saved. Run a scan to extract promise debt, or add a clearer commitment if
           nothing obvious is in the text.
         </div>
@@ -121,7 +121,7 @@ export function DashboardWorkspace({
 
       {closed.length > 0 && (
         <section>
-          <h2 className="font-display text-2xl">Closed</h2>
+          <h2 className="font-display text-3xl">Closed</h2>
           <div className="mt-4 grid gap-4">
             {closed.map((item) => (
               <PromiseCard
@@ -137,7 +137,7 @@ export function DashboardWorkspace({
 
       {contents.length > 0 && (
         <section>
-          <h2 className="font-display text-2xl">Source history</h2>
+          <h2 className="font-display text-3xl">Source history</h2>
           <ul className="mt-4 divide-y divide-rule border border-rule">
             {contents.map((item) => (
               <li key={item.id} className="px-4 py-3 text-sm">

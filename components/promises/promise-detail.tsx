@@ -88,8 +88,8 @@ export function PromiseDetail({
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <article className="ticket p-6 pl-8">
+    <div className="grid gap-8 min-[900px]:grid-cols-[1.05fr_0.95fr]">
+      <article className="evidence-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <StatusStamp status={promise.status} urgency={promise.urgency} />
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
@@ -97,8 +97,8 @@ export function PromiseDetail({
             {typeLabel(promise.promiseType)} · {promise.confidence} confidence
           </p>
         </div>
-        <h1 className="mt-5 font-display text-3xl leading-tight">Evidence first</h1>
-        <blockquote className="mt-4 border-l-2 border-seal/50 pl-4 font-mono text-base leading-7">
+        <h1 className="mt-5 font-display text-4xl leading-none">Evidence first</h1>
+        <blockquote className="mt-5 border-l-2 border-signal pl-4 font-mono text-base leading-7">
           “{promise.evidenceQuote}”
         </blockquote>
         {promise.source && (
@@ -127,27 +127,28 @@ export function PromiseDetail({
               className="mt-2 w-full border border-rule bg-paper p-2"
             />
           </label>
-          <button type="submit" disabled={busy} className="border border-ink px-3 py-2 text-sm">
+          <button type="submit" disabled={busy} className="button-secondary">
             Save edits
           </button>
         </form>
       </article>
 
-      <section>
-        <h2 className="font-display text-2xl">Close the loop</h2>
+      <section className="surface-card p-6">
+        <p className="eyebrow text-seal">Your next action</p>
+        <h2 className="mt-3 font-display text-4xl leading-none">Close the loop</h2>
         <label className="mt-4 block text-sm">
           Delivery link <span className="text-ink-muted">(optional, never invented)</span>
           <input
             type="url"
             value={link}
             onChange={(event) => setLink(event.target.value)}
-            className="mt-2 w-full border border-rule bg-paper-raised p-2"
+            className="mt-2 w-full rounded-[var(--radius-sm)] border border-rule bg-paper-raised p-2"
           />
         </label>
         <textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          className="mt-4 w-full border border-rule bg-paper-raised p-3 font-mono text-sm"
+          className="mt-4 w-full rounded-[var(--radius-sm)] border border-rule bg-paper-raised p-3 font-mono text-sm"
           rows={8}
           placeholder="Draft a follow-up grounded in the evidence above."
         />
@@ -156,11 +157,11 @@ export function PromiseDetail({
             type="button"
             onClick={draftFollowUp}
             disabled={busy}
-            className="bg-ink px-3 py-2 text-sm text-paper-raised"
+            className="button-primary"
           >
             Save follow-up draft
           </button>
-          <button type="button" onClick={copyDraft} className="border border-ink px-3 py-2 text-sm">
+          <button type="button" onClick={copyDraft} className="button-secondary">
             Copy
           </button>
           {(promise.source?.platform === "x" || promise.draft?.channel === "x") && draft && (
@@ -168,7 +169,7 @@ export function PromiseDetail({
               href={xIntentUrl(draft)}
               target="_blank"
               rel="noreferrer"
-              className="border border-ink px-3 py-2 text-sm"
+              className="button-secondary"
             >
               Open in X
             </a>
@@ -178,26 +179,26 @@ export function PromiseDetail({
           <button
             type="button"
             onClick={() => setStatus("fulfilled")}
-            className="border border-kept px-3 py-2 text-sm text-kept"
+            className="button-secondary border-kept text-kept"
           >
             Mark fulfilled
           </button>
           <button
             type="button"
             onClick={() => setStatus("dismissed")}
-            className="border border-dismissed px-3 py-2 text-sm text-dismissed"
+            className="button-secondary border-dismissed text-dismissed"
           >
             Dismiss
           </button>
           <button
             type="button"
             onClick={() => setStatus("open")}
-            className="border border-open px-3 py-2 text-sm text-open"
+            className="button-secondary border-open text-open"
           >
             Reopen
           </button>
         </div>
-        {message && <p className="mt-4 text-sm text-seal">{message}</p>}
+        {message && <p aria-live="polite" className="mt-4 border-l-2 border-seal pl-3 text-sm text-seal">{message}</p>}
       </section>
     </div>
   );

@@ -6,35 +6,27 @@ export async function SiteHeader({ compact = false }: { compact?: boolean }) {
   const user = await getOptionalUser();
 
   return (
-    <header className="border-b border-rule/80">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link href="/" className="flex items-baseline gap-2">
-          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full bg-seal" />
-          <span className="font-display text-2xl font-medium tracking-tight">Kept</span>
-          {!compact && (
-            <span className="hidden text-sm text-ink-muted sm:inline">
-              keep the promises your content makes
-            </span>
-          )}
+    <header className="bg-ink text-paper-raised">
+      <div className="kept-shell flex min-h-14 items-center justify-between gap-4">
+        <Link href="/" className="font-display text-3xl leading-none tracking-tight">
+          Kept
         </Link>
-        <nav className="flex items-center gap-2 text-sm sm:gap-3">
-          <Link className="px-2 py-1 text-ink-muted hover:text-ink" href="/demo">
-            Demo
-          </Link>
+        {!compact && (
+          <nav aria-label="Primary" className="hidden items-center gap-6 text-sm font-medium md:flex">
+            <a href="#what-it-catches" className="text-paper-raised/80 hover:text-paper-raised">What it catches</a>
+            <a href="#how-it-works" className="text-paper-raised/80 hover:text-paper-raised">How it works</a>
+            <a href="#why-it-matters" className="text-paper-raised/80 hover:text-paper-raised">Why it matters</a>
+          </nav>
+        )}
+        <nav className="flex items-center gap-2 text-sm" aria-label="Account">
+          {!compact && <a href="#how-it-works" className="px-2 py-1 font-medium md:hidden">Menu</a>}
           {user ? (
             <>
-              <Link className="px-2 py-1 hover:text-seal" href="/dashboard">
-                Ledger
-              </Link>
+              <Link href="/dashboard" className="px-2 py-1 font-medium hover:text-butter">Workspace</Link>
               <SignOutButton />
             </>
           ) : (
-            <Link
-              className="border border-ink bg-ink px-3 py-1.5 text-paper-raised hover:bg-seal hover:border-seal"
-              href="/auth/sign-in"
-            >
-              Sign in
-            </Link>
+            <Link href="/auth/sign-in" className="button-inverse min-h-0 px-3 py-2 text-sm">Sign in</Link>
           )}
         </nav>
       </div>

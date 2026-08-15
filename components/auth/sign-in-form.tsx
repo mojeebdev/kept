@@ -79,9 +79,9 @@ export function SignInForm() {
   }
 
   return (
-    <div className="ticket mx-auto w-full max-w-md p-6 pl-8">
-      <p className="font-mono text-xs uppercase tracking-[0.2em] text-seal">Private workspace</p>
-      <h1 className="mt-3 font-display text-3xl">Sign in to Kept</h1>
+    <div className="evidence-card mx-auto w-full max-w-md p-6">
+      <p className="eyebrow text-seal">Private workspace</p>
+      <h1 className="mt-4 font-display text-4xl leading-none">Sign in to Kept</h1>
       <p className="mt-3 text-sm leading-6 text-ink-muted">
         Google first. Email link if you need it. Same account, same ledger, any device. No
         passwords stored by Kept.
@@ -90,7 +90,7 @@ export function SignInForm() {
         type="button"
         onClick={google}
         disabled={busy}
-        className="mt-6 w-full bg-ink px-4 py-3 text-sm text-paper-raised hover:bg-seal disabled:opacity-60"
+        className="button-primary mt-6 w-full disabled:opacity-60"
       >
         Continue with Google
       </button>
@@ -106,11 +106,11 @@ export function SignInForm() {
             placeholder="you@studio.com"
           />
         </label>
-        <button type="submit" disabled={busy} className="w-full border border-ink px-4 py-2 text-sm">
+        <button type="submit" disabled={busy} className="button-secondary w-full">
           Email me a sign-in link
         </button>
       </form>
-      {message && <p className="mt-4 text-sm leading-6 text-seal">{message}</p>}
+      {message && <p aria-live="polite" className="mt-4 border-l-2 border-seal pl-3 text-sm leading-6 text-seal">{message}</p>}
     </div>
   );
 }

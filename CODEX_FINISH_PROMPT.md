@@ -1,86 +1,109 @@
 # Codex Finish Prompt — Kept
 
-You are the senior finishing engineer for **Kept**. Grok has already attempted the first implementation. Your job is not to rewrite everything blindly. Audit what exists, preserve working code, fix real gaps, make the core loop reliable, and leave it submission-ready.
+You are the senior finishing engineer for **Kept**. Grok already built the MVP. Do not rewrite it. Audit what exists, preserve working code, fix real gaps, prove the core loop on the live Neon account, and leave it submission-ready.
+
+Repo: https://github.com/mojeebdev/kept  
+Local workspace already has `.env.local`. Never print, commit, or log secrets.
 
 ## Read first
 
-Read these files before touching code:
+1. `BUILD_STATUS.md`
+2. `docs/hackathon-build/scope.md`
+3. `docs/hackathon-build/prd.md`
+4. `docs/hackathon-build/spec.md`
+5. `docs/hackathon-build/checklist.md`
+6. `README.md`
+7. `git status` and the current tree
 
-1. `BUILD_STATUS.md` if it exists
-2. `docs/hackathon-build/learner-profile.md`
-3. `docs/hackathon-build/scope.md`
-4. `docs/hackathon-build/prd.md`
-5. `docs/hackathon-build/spec.md`
-6. `docs/hackathon-build/checklist.md`
-
-Inspect git status and the current project structure. Preserve unrelated user changes. Do not reset, force-push, or delete work to make the audit easier.
+Preserve unrelated user changes. Do not reset, force-push, or delete work to make the audit easier.
 
 ## Product truth
 
-Kept is a private, cross-device public-promise ledger for creators. It must prove this exact loop:
+Kept is a private, cross-device public-promise ledger for creators.
 
 ```text
 sign in -> save content -> scan promise evidence -> generate follow-up -> mark fulfilled -> return from another device
 ```
 
-It is **not** a generic AI content generator, social scheduler, or automatic publishing tool.
+It is not a generic AI content generator, social scheduler, or auto-publisher.
 
-## Audit checklist
+## What Grok already did
 
-### 1. Reality check
+Treat this as done unless you prove otherwise:
 
-- Identify every feature that is a mock, hard-coded as live, or unsupported by the backend.
-- Remove misleading claims or wire the missing functionality properly.
-- Ensure demo data is visibly temporary and separate from authenticated user data.
+- Next.js 16 + TypeScript + Tailwind v4
+- Landing + honest `/demo` (5 seeded posts, 3 promises, in-memory only)
+- Neon Auth via `@neondatabase/auth` (`createNeonAuth`, handler, `proxy.ts`)
+- Google first, magic-link / email OTP fallback. No Clerk, no Auth.js, no password UI
+- Drizzle schema pushed to the owner’s Neon project: `profiles`, `content_items`, `promises`, `follow_up_drafts`
+- Server-derived `user_id` on every query/mutation
+- Deterministic scanner + optional NVIDIA NIM enrichment
+- Ledger, promise detail, draft, copy, X intent, fulfil / dismiss / reopen
+- `npm run lint`, `typecheck`, `test`, and `build` passed on the Grok pass
 
-### 2. Authentication and storage
+## Current AI setup (do not change unless broken)
 
-- Verify the project uses the current official Neon Auth setup, not Clerk, NextAuth/Auth.js, or custom passwords.
-- Verify Google and/or magic-link paths are correctly configured/documented.
-- Ensure every protected read/write derives user identity on the server.
-- Confirm no client-supplied owner ID can access or mutate another user’s content.
-- Confirm schema/migrations exist for profiles, content items, promises, and follow-up drafts.
-- Test cross-browser persistence with a real authenticated account if environment access is available; otherwise leave exact owner steps in `BUILD_STATUS.md`.
+```bash
+AI_BASE_URL=https://integrate.api.nvidia.com/v1
+AI_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
+```
 
-### 3. Core scan loop
+Key is already in `.env.local` as `AI_API_KEY` / `NVIDIA_API_KEY`.
 
-- Test a clear sentence: `Comment TEMPLATE and I'll send it tomorrow.`
-- Ensure it yields a promise with the exact evidence quote, a meaningful summary, due-date behavior, and confidence.
-- Test no-promise input, ambiguous input, duplicate input, and AI-provider failure.
-- Ensure deterministic extraction works without an AI key.
-- Validate all model output with Zod and prevent malformed output from breaking the UI.
+NVIDIA notes from the Grok pass:
 
-### 4. Product UX
+- The model rejects `extra_body`
+- It often writes a thinking preamble before JSON
+- It returns loose fields (`dueAt: "Tomorrow"`, numeric confidence, free-text `promiseType`)
+- `lib/scan/ai.ts` already strips thinking text and `lib/scan/schema.ts` normalizes those fields
+- A live enrichment call returned `used: true` after that fix
 
-- Make the landing page communicate the value in seconds.
-- Improve the dashboard until it feels like a trustworthy ledger, not a generic cards-and-gradient AI dashboard.
-- Ensure urgency order is correct: overdue, due today, open, drafted, fulfilled/dismissed.
-- Show source evidence before model-generated claims.
-- Ensure users can edit/dismiss/reopen/fulfil promises.
-- Make the follow-up draft editable, copyable, and honest: opening an X intent is not confirmation of publishing.
-- Test a narrow mobile viewport and fix overflow, hit areas, focus states, loading states, empty states, and errors.
+Deterministic extraction must still work if the key is missing or NVIDIA fails.
 
-### 5. Engineering quality
+## What is still unverified
 
-Run and fix:
+`BUILD_STATUS.md` is stale on this point. Neon + schema + NVIDIA key now exist locally. These were **not** proven end-to-end:
+
+- Google sign-in and magic-link on this Neon Auth branch
+- Signed-out user blocked from `/dashboard`
+- Create content → scan → draft → fulfil → reload
+- Same records in a second browser/session
+- Demo data never writing to production tables
+- Narrow mobile layout of landing, demo, dashboard, and promise detail
+
+## Your job
+
+Checklist item 10 only. Do not start Devpost video/screenshots unless the core loop is proven.
+
+1. Inspect before editing. Prefer the smallest safe patch.
+2. Live-verify auth, persistence, scan, draft, and fulfil against the existing `.env.local`.
+3. Fix real defects only: auth/session bugs, owner-scope leaks, scan/date/Zod failures, demo/data leakage, broken empty/error states, mobile overflow, README/BUILD_STATUS drift.
+4. Keep the editorial ledger look. Do not turn it into a generic AI dashboard.
+5. Run and fix:
 
 ```bash
 npm run lint
 npm run typecheck
+npm test
 npm run build
 ```
 
-Add or repair a focused test/script for deterministic extraction and urgency calculation if that is missing. Check that `.env.example`, migrations, README, and deployment instructions match actual code. Ensure no secret is exposed to the client or committed.
+6. Update `BUILD_STATUS.md` with what you actually verified, commands run, remaining owner steps, and known limits.
+7. Align README with reality, including the NVIDIA model and base URL.
 
-### 6. Deployment and handoff
+## Do not do
 
-- Prepare the app for Vercel with correctly documented environment variables and auth callback URL requirements.
-- Do not deploy, push, or create external resources unless the user asks or credentials are already configured for that exact task.
-- Create or update `BUILD_STATUS.md` with what you verified, fixes made, commands run, remaining owner configuration, and known limitations.
-- Update the README with the live-demo path, setup, architecture, privacy boundary, and Devpost demo instructions.
+- Direct social OAuth, scraping, auto-publishing, billing, teams, analytics, file upload, scheduled digests
+- Swap Neon Auth for Clerk / Auth.js
+- Swap the NVIDIA model unless it is actually broken
+- Commit `.env.local` or any secret
+- Deploy, push, or open a PR unless the owner asks
+- Expand scope to make the audit look bigger
 
-## Scope discipline
+## Done when
 
-Do not add direct social OAuth, auto-publishing, team accounts, billing, scheduled digests, media storage, or analytics. If the app is imperfect, make the core promise loop flawless instead of expanding it.
-
-At the end, give a concise report with changed files, test results, real blockers, and whether Kept is ready for screenshots/video/submission prep.
+- Core loop works on a real signed-in account and survives reload
+- Demo stays temporary and isolated
+- Quality commands pass
+- `BUILD_STATUS.md` is honest
+- You report: files changed, tests run, blockers, and whether Kept is ready for screenshots/video/deploy

@@ -1,0 +1,24 @@
+<svg class="relay-art" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <style>
+    .signal-ribbon { stroke-dasharray: 18 10; animation: relay-draw 800ms cubic-bezier(.16,1,.3,1) both; }
+    @keyframes relay-draw { from { stroke-dashoffset: 80; } to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .signal-ribbon { animation: none; } }
+  </style>
+  <g stroke="#181813" stroke-width="6" stroke-linejoin="round">
+    <rect x="36" y="218" width="184" height="146" rx="14" fill="#FFFDF7"/>
+    <path d="M76 265h102M76 300h70M76 332h92" stroke-width="8" stroke-linecap="round"/>
+    <path d="M68 248c10-24 24-34 42-31" stroke="#ED5C2F" stroke-width="10" stroke-linecap="round"/>
+    <rect x="260" y="114" width="210" height="238" rx="24" fill="#F8D05B"/>
+    <path d="M304 176h122v122H304z" fill="#F5B6A7"/>
+    <circle cx="365" cy="237" r="38" fill="#FFFDF7"/>
+    <path d="M350 236l12 12 24-31" stroke="#24745F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path class="signal-ribbon" d="M220 291C280 291 263 86 365 86s75 301 152 301h65" stroke="#ED5C2F" stroke-width="12" stroke-linecap="round"/>
+    <rect x="514" y="272" width="170" height="142" rx="14" fill="#FFFDF7"/>
+    <path d="M552 316h94M552 347h60M552 378h82" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="658" cy="390" r="28" fill="#24745F"/>
+    <path d="M646 390l8 8 16-20" stroke="#FFFDF7" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <path d="M290 396l54-20M405 396l47-21" stroke="#181813" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="283" cy="399" r="10" fill="#ED5C2F" stroke="#181813" stroke-width="5"/>
+  <circle cx="456" cy="374" r="10" fill="#ED5C2F" stroke="#181813" stroke-width="5"/>
+</svg>
