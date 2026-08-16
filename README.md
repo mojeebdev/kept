@@ -35,7 +35,7 @@ Kept never asks for social passwords, never stores social tokens or browser cook
 - Tailwind CSS v4
 - Neon Postgres via Drizzle ORM and `@neondatabase/serverless`
 - **Managed Better Auth** (`@neondatabase/auth`) — the current official Neon Auth for Next.js
-- Google OAuth first, magic-link / email OTP fallback
+- Google OAuth only (no magic-link or email-OTP fallback)
 - Optional OpenAI-compatible AI enrichment through NVIDIA NIM (`AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`)
 - Deterministic promise detector as the reliability floor
 
@@ -45,9 +45,8 @@ Kept never asks for social passwords, never stores social tokens or browser cook
 2. Enable **Auth** on the branch: Project → Branch → Auth → Enable Auth.
 3. Enable **Google** under Auth providers. Shared Google credentials work for development. For production, add your own OAuth client and register the callback:
    `{NEON_AUTH_BASE_URL}/callback/google`
-4. Enable the **Magic Link** plugin (or Email OTP) as the passwordless fallback.
-5. Add your app origin to **trusted domains** (`http://localhost:3000` locally, your Vercel URL in production).
-6. Copy `.env.example` to `.env.local` and fill:
+4. Add your app origin to **trusted domains** (`http://localhost:3000` locally, your Vercel URL in production).
+5. Copy `.env.example` to `.env.local` and fill:
 
 ```bash
 DATABASE_URL=                 # Neon pooled connection string
