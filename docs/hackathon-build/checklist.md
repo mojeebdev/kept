@@ -25,7 +25,7 @@
 
 - [x] **3. Implement Neon Auth and protected workspace access**
   Spec ref: `spec.md > Components And Responsibilities > Authentication and access control`
-  What to build: Add current official Neon Auth Next.js integration, Google OAuth and magic-link entry points, session-aware middleware/server guards, and a profile upsert path.
+  What to build: Add current official Neon Auth Next.js integration, the Google OAuth entry point, session-aware middleware/server guards, and a profile upsert path.
   Acceptance: Signed-out users cannot load `/dashboard`; a signed-in user reaches a private workspace with a stable auth ID.
   Verify: Test sign-in, sign-out, direct protected-route access, and a second browser session.
 
