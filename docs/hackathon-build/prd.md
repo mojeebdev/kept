@@ -12,7 +12,7 @@ A solo creator, educator, or indie founder who publishes content and frequently 
 
 1. **Discover:** A visitor understands that Kept tracks public promises, not posting frequency.
 2. **Try:** They can run a clear guest demo without sharing credentials.
-3. **Persist:** They sign in with Google or a magic link to own a cloud workspace.
+3. **Persist:** They sign in with Google to own a cloud workspace.
 4. **Add content:** They paste content or import a small CSV.
 5. **Scan:** Kept identifies possible promises and shows proof from the source text.
 6. **Prioritize:** The user sees what is open, due, or overdue.
@@ -40,7 +40,7 @@ Acceptance criteria:
 
 Acceptance criteria:
 
-- Google sign-in is available; magic-link email is the fallback.
+- Google sign-in is the only available account method.
 - A signed-in user receives a stable workspace tied to the server-derived auth user ID.
 - Reloading or signing in elsewhere shows the same saved source items, promises, and drafts.
 - No database query trusts a `user_id` sent by the browser.
