@@ -11,7 +11,7 @@ The system must make one thing unambiguous: the same authenticated user can retu
 - **Framework:** Next.js App Router, TypeScript, latest stable release selected by the implementation agent.
 - **UI:** Tailwind CSS, accessible native controls or small audited UI primitives, `lucide-react` icons.
 - **Database:** Neon Postgres.
-- **Authentication:** Current official Neon Auth integration for Next.js; Google OAuth primary, magic-link email fallback. Do not use Clerk, NextAuth/Auth.js, or a custom password system.
+- **Authentication:** Current official Neon Auth integration for Next.js; Google OAuth only. Do not use Clerk, NextAuth/Auth.js, or a custom password system.
 - **Database access:** Drizzle ORM plus Neon’s serverless driver, or the current official Neon data-access pattern if the latest Auth starter requires it. Choose one and document it.
 - **Validation:** Zod for all browser input, route input, CSV rows, and AI structured output.
 - **AI:** A server-only OpenAI-compatible provider adapter configured by `AI_BASE_URL`, `AI_API_KEY`, and `AI_MODEL`. Never expose the key in `NEXT_PUBLIC_*` variables.
@@ -121,7 +121,7 @@ Authenticated user
 Implements: `prd.md > Epic 2: Sign in and retain a private workspace`
 
 - Configure the current official Neon Auth Next.js server and client helpers.
-- Provide Google OAuth and magic-link entry points.
+- Provide the Google OAuth entry point only.
 - Protect `/dashboard/*` with middleware/server checks.
 - Create or upsert `profiles` after a valid session.
 - Make no assumption that a Neon Auth profile record appears synchronously; handle a first-login race gracefully.
